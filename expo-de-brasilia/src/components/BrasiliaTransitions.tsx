@@ -8,56 +8,50 @@ const BrasiliaTransitions: React.FC = () => {
   const isTransitioningRef = useRef<boolean>(false);
   const [logoLoaded, setLogoLoaded] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
-  
+
   const imagePaths: string[] = [
     '/images/brasilia1.jpeg',
-    '/images/brasilia2.jpeg',
+    '/images/brasilia8.jpeg',
     '/images/brasilia3.jpeg',
     '/images/brasilia4.jpeg',
     '/images/brasilia5.jpeg',
-    '/images/brasilia6.jpeg',
-    '/images/brasilia7.jpeg',
-    '/images/brasilia8.jpeg',
-    '/images/brasilia9.jpeg',
     '/images/brasilia10.jpeg',
+    '/images/brasilia6.jpeg',
+    '/images/brasilia9.jpeg',
+    '/images/brasilia7.jpeg',
+    '/images/brasilia2.jpeg',
   ];
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
-    
+
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const drawImage = (
-      img: HTMLImageElement,
-      opacity: number = 1
-    ): void => {
+    const drawImage = (img: HTMLImageElement, opacity: number = 1): void => {
       const imgAspect = img.width / img.height;
       const canvasAspect = canvas.width / canvas.height;
-      
       let drawWidth: number, drawHeight: number, posX: number, posY: number;
-      
-      // Usar 'contain' para mostrar a imagem completa (com bordas pretas se necessário)
+
       if (imgAspect > canvasAspect) {
-        // Imagem mais larga que o canvas
         drawWidth = canvas.width;
         drawHeight = drawWidth / imgAspect;
         posX = 0;
         posY = (canvas.height - drawHeight) / 2;
       } else {
-        // Imagem mais alta que o canvas
         drawHeight = canvas.height;
         drawWidth = drawHeight * imgAspect;
         posX = (canvas.width - drawWidth) / 2;
         posY = 0;
       }
-      
+
       ctx.save();
       ctx.globalAlpha = opacity;
+      ctx.globalCompositeOperation = 'source-over';
       ctx.drawImage(img, posX, posY, drawWidth, drawHeight);
       ctx.restore();
     };
@@ -73,7 +67,7 @@ const BrasiliaTransitions: React.FC = () => {
       ctx.translate(centerX, centerY);
       ctx.rotate(rotation);
       ctx.beginPath();
-      
+
       if (shapeType === 'circle') {
         ctx.arc(0, 0, size, 0, Math.PI * 2);
       } else if (shapeType === 'star') {
@@ -84,7 +78,6 @@ const BrasiliaTransitions: React.FC = () => {
           const innerAngle = angle + Math.PI / 4;
           const innerX = Math.cos(innerAngle) * (size * 0.4);
           const innerY = Math.sin(innerAngle) * (size * 0.4);
-          
           if (i === 0) ctx.moveTo(outerX, outerY);
           else ctx.lineTo(outerX, outerY);
           ctx.lineTo(innerX, innerY);
@@ -92,7 +85,7 @@ const BrasiliaTransitions: React.FC = () => {
       } else if (shapeType === 'square') {
         ctx.rect(-size / 2, -size / 2, size, size);
       }
-      
+
       ctx.closePath();
       ctx.restore();
     };
@@ -113,7 +106,7 @@ const BrasiliaTransitions: React.FC = () => {
       ctx.shadowBlur = 25;
       ctx.shadowColor = '#FBBB10';
       ctx.beginPath();
-      
+
       if (shapeType === 'circle') {
         ctx.arc(0, 0, size, 0, Math.PI * 2);
       } else if (shapeType === 'star') {
@@ -124,7 +117,6 @@ const BrasiliaTransitions: React.FC = () => {
           const innerAngle = angle + Math.PI / 4;
           const innerX = Math.cos(innerAngle) * (size * 0.4);
           const innerY = Math.sin(innerAngle) * (size * 0.4);
-          
           if (i === 0) ctx.moveTo(outerX, outerY);
           else ctx.lineTo(outerX, outerY);
           ctx.lineTo(innerX, innerY);
@@ -132,7 +124,7 @@ const BrasiliaTransitions: React.FC = () => {
       } else if (shapeType === 'square') {
         ctx.rect(-size / 2, -size / 2, size, size);
       }
-      
+
       ctx.stroke();
       ctx.restore();
     };
@@ -142,96 +134,77 @@ const BrasiliaTransitions: React.FC = () => {
     };
 
     const startTransition = (): void => {
-      if (isTransitioningRef.current) return;
-      isTransitioningRef.current = true;
-      
-      const currentIndex = currentImageIndexRef.current;
-      const nextIndex = (currentIndex + 1) % imagesRef.current.length;
-      
-      const currentImg = imagesRef.current[currentIndex];
-      const nextImg = imagesRef.current[nextIndex];
-      
-      if (!currentImg || !nextImg) return;
+  if (isTransitioningRef.current) return;
+  isTransitioningRef.current = true;
 
-      let frame = 0;
-      const transitionDuration = 390;
+  const currentIndex = currentImageIndexRef.current;
+  const nextIndex = (currentIndex + 1) % imagesRef.current.length;
+  const currentImg = imagesRef.current[currentIndex];
+  const nextImg = imagesRef.current[nextIndex];
+
+  if (!currentImg || !nextImg) return;
+
+  let frame = 0;
+  const transitionDuration = 190;
+
+  // APENAS TRANSIÇÕES DE DENTRO PARA FORA (sem reverse)
+  const transitions: Array<'circle' | 'star' | 'square'> = ['circle', 'star', 'square'];
+  const selectedShape = transitions[Math.floor(Math.random() * transitions.length)];
+
+  const animate = (): void => {
+    frame++;
+    const progress = frame / transitionDuration;
+    const easedProgress = easeInOutCubic(progress);
+
+    // LIMPEZA COMPLETA
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const maxSize = Math.sqrt(centerX * centerX + centerY * centerY) * 2;
+    const shapeRotation = progress * Math.PI * 2;
+
+    // Tamanho cresce de 0 até maxSize (de dentro para fora)
+    const currentSize = maxSize * easedProgress;
+
+    // Desenha imagem atual no fundo
+    drawImage(currentImg, 1);
+    
+    // Desenha próxima imagem dentro da forma crescente
+    ctx.save();
+    createClipPath(selectedShape, centerX, centerY, currentSize, shapeRotation);
+    ctx.clip();
+    drawImage(nextImg, 1);
+    ctx.restore();
+
+    // Borda da forma
+    const borderOpacity = Math.sin(progress * Math.PI) * 0.8;
+    drawClipBorder(selectedShape, centerX, centerY, currentSize, borderOpacity, shapeRotation);
+
+    if (frame < transitionDuration) {
+      animationRef.current = requestAnimationFrame(animate);
+    } else {
+      // ATUALIZA O ÍNDICE E LIMPA
+      currentImageIndexRef.current = nextIndex;
+      isTransitioningRef.current = false;
       
-      const transitions: Array<{
-        shape: 'circle' | 'star' | 'square';
-        reverse: boolean;
-      }> = [
-        { shape: 'circle', reverse: false },
-        { shape: 'circle', reverse: true },
-        { shape: 'star', reverse: false },
-        { shape: 'star', reverse: true },
-        { shape: 'square', reverse: false },
-        { shape: 'square', reverse: true }
-      ];
-      
-      const selectedTransition = transitions[Math.floor(Math.random() * transitions.length)];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      drawImage(nextImg, 1);
 
-      const animate = (): void => {
-        frame++;
-        const progress = frame / transitionDuration;
-        const easedProgress = easeInOutCubic(progress);
-        
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // PRÓXIMA TRANSIÇÃO
+      setTimeout(() => {
+        startTransition();
+      }, 4000);
+    }
+  };
 
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const maxSize = Math.sqrt(centerX * centerX + centerY * centerY) * 2;
-        
-        const shapeRotation = progress * Math.PI * 2;
-        
-        let currentSize: number;
-        let clipProgress: number;
-        
-        if (selectedTransition.reverse) {
-          clipProgress = 1 - easedProgress;
-          currentSize = maxSize * clipProgress;
-          
-          drawImage(nextImg, 1);
-          
-          ctx.save();
-          createClipPath(selectedTransition.shape, centerX, centerY, currentSize, shapeRotation);
-          ctx.clip();
-          drawImage(currentImg, 1);
-          ctx.restore();
-        } else {
-          clipProgress = easedProgress;
-          currentSize = maxSize * clipProgress;
-          
-          drawImage(currentImg, 1);
-          
-          ctx.save();
-          createClipPath(selectedTransition.shape, centerX, centerY, currentSize, shapeRotation);
-          ctx.clip();
-          drawImage(nextImg, 1);
-          ctx.restore();
-        }
-        
-        const borderOpacity = Math.sin(progress * Math.PI) * 0.8;
-        drawClipBorder(selectedTransition.shape, centerX, centerY, currentSize, borderOpacity, shapeRotation);
+  animate();
+};
 
-        if (frame < transitionDuration) {
-          animationRef.current = requestAnimationFrame(animate);
-        } else {
-          currentImageIndexRef.current = nextIndex;
-          isTransitioningRef.current = false;
-          
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          drawImage(nextImg, 1);
-          
-          setTimeout(() => {
-            startTransition();
-          }, 7000);
-        }
-      };
-
-      animate();
-    };
 
     const loadImages = async (): Promise<void> => {
       const promises = imagePaths.map(path => {
@@ -242,24 +215,18 @@ const BrasiliaTransitions: React.FC = () => {
           img.src = path;
         });
       });
-      
+
       const loadedImages = await Promise.all(promises);
       imagesRef.current = loadedImages.filter((img): img is HTMLImageElement => img !== null);
-      
+
       if (imagesRef.current.length > 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         drawImage(imagesRef.current[0], 1);
-        
-        // Mostrar prompt após 3 segundos
-        setTimeout(() => {
-          setShowPrompt(true);
-        }, 3000);
-        
-        // Iniciar transições após 7 segundos
-        setTimeout(() => {
-          startTransition();
-        }, 7000);
+
+        setTimeout(() => setShowPrompt(true), 3000);
+        setTimeout(() => startTransition(), 7000);
       }
     };
 
@@ -268,8 +235,8 @@ const BrasiliaTransitions: React.FC = () => {
     const handleResize = (): void => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      
       if (imagesRef.current[currentImageIndexRef.current]) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         drawImage(imagesRef.current[currentImageIndexRef.current], 1);
@@ -287,9 +254,9 @@ const BrasiliaTransitions: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ 
-      width: '100vw', 
-      height: '100vh', 
+    <div style={{
+      width: '100vw',
+      height: '100vh',
       overflow: 'hidden',
       backgroundColor: '#000',
       margin: 0,
@@ -305,7 +272,7 @@ const BrasiliaTransitions: React.FC = () => {
         }}
       />
 
-      {/* Logo sempre visível no canto superior esquerdo */}
+      {/* Logo */}
       <div style={{
         position: 'absolute',
         top: '30px',
@@ -315,7 +282,7 @@ const BrasiliaTransitions: React.FC = () => {
         opacity: logoLoaded ? 1 : 0,
         transition: 'opacity 0.5s ease-in-out'
       }}>
-        <img 
+        <img
           src="/images/logo.jpeg"
           alt="Brasília Logo"
           onLoad={() => setLogoLoaded(true)}
@@ -328,7 +295,7 @@ const BrasiliaTransitions: React.FC = () => {
         />
       </div>
 
-      {/* Mensagem de interação no canto inferior direito */}
+      {/* Card Modo de Espera - COM GRADIENTE E LINHAS */}
       {showPrompt && (
         <div style={{
           position: 'absolute',
@@ -344,48 +311,25 @@ const BrasiliaTransitions: React.FC = () => {
             textAlign: 'left',
             padding: '35px 40px',
             borderRadius: '20px',
-            backgroundColor: 'rgba(0, 0, 0, 0.88)',
-            backdropFilter: 'blur(15px)',
+            background: 'linear-gradient(135deg, rgb(227, 227, 226) 0%, rgb(46, 46, 46) 25%, rgb(60, 60, 60) 50%, rgb(46, 46, 46) 75%, rgb(227, 227, 226) 100%)',
+            backgroundSize: '400% 400%',
+            animation: 'gradientShift 30s ease infinite, pulse 3.5s ease-in-out infinite',
             border: '3px solid rgba(251, 187, 16, 0.6)',
-            animation: 'pulse 3.5s ease-in-out infinite',
             boxShadow: '0 10px 50px rgba(0, 0, 0, 0.8), 0 0 60px rgba(251, 187, 16, 0.2)',
             overflow: 'hidden'
           }}>
-            {/* Forma de apoio - SEMICÍRCULO decorativo (RGB 66, 152, 207 - Azul) */}
+            {/* GRADE DE LINHAS NO CARD */}
             <div style={{
               position: 'absolute',
-              top: '-70px',
-              right: '-70px',
-              width: '140px',
-              height: '70px',
-              backgroundColor: 'rgba(66, 152, 207, 0.2)',
-              borderRadius: '0 0 140px 140px',
-              pointerEvents: 'none',
-              zIndex: 0
-            }} />
-            
-            {/* Forma de apoio - ESTRELA DIAMANTE 4 PONTAS decorativa (RGB 251, 187, 16 - Amarelo) */}
-            <div style={{
-              position: 'absolute',
-              bottom: '-55px',
-              left: '-55px',
-              width: '110px',
-              height: '110px',
-              backgroundColor: 'rgba(251, 187, 16, 0.15)',
-              clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
-              pointerEvents: 'none',
-              zIndex: 0
-            }} />
-            
-            {/* Forma de apoio - QUADRADO decorativo (RGB 85, 95, 60 - Verde) */}
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '-40px',
-              width: '80px',
-              height: '80px',
-              backgroundColor: 'rgba(85, 95, 60, 0.12)',
-              transform: 'translateY(-50%)',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundImage: `
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px)
+              `,
+              backgroundSize: '80px 80px',
               pointerEvents: 'none',
               zIndex: 0
             }} />
@@ -398,22 +342,23 @@ const BrasiliaTransitions: React.FC = () => {
               fontWeight: '600',
               marginBottom: '18px',
               letterSpacing: '1px',
-              textShadow: '0 2px 15px rgba(251, 187, 16, 0.6)',
+              textShadow: '0 2px 15px rgba(0, 0, 0, 0.8)',
               lineHeight: '1.2',
               zIndex: 1
             }}>
               Modo de Espera Ativo
             </h2>
-            
+
             <p style={{
               position: 'relative',
-              color: 'rgb(227, 227, 226)',
+              color: 'rgb(255, 255, 255)',
               fontFamily: 'Jost, sans-serif',
               fontSize: '18px',
-              fontWeight: '300',
+              fontWeight: '400',
               lineHeight: '1.6',
               marginBottom: '25px',
               letterSpacing: '0.3px',
+              textShadow: '0 2px 10px rgba(0, 0, 0, 0.9)',
               zIndex: 1
             }}>
               Toque na tela <br />
@@ -427,7 +372,7 @@ const BrasiliaTransitions: React.FC = () => {
               gap: '20px',
               zIndex: 1
             }}>
-              {/* SEMICÍRCULO - Azul (RGB 66, 152, 207) */}
+              {/* SEMICÍRCULO - Azul */}
               <div style={{
                 width: '55px',
                 height: '27.5px',
@@ -437,8 +382,8 @@ const BrasiliaTransitions: React.FC = () => {
                 animationDelay: '0s',
                 boxShadow: '0 5px 25px rgba(66, 152, 207, 0.6)'
               }} />
-              
-              {/* ESTRELA DIAMANTE 4 PONTAS - Amarelo (RGB 251, 187, 16) */}
+
+              {/* ESTRELA DIAMANTE - Amarelo */}
               <div style={{
                 width: '55px',
                 height: '55px',
@@ -448,8 +393,8 @@ const BrasiliaTransitions: React.FC = () => {
                 animationDelay: '0.35s',
                 boxShadow: '0 5px 25px rgba(251, 187, 16, 0.6)'
               }} />
-              
-              {/* QUADRADO - Vermelho escuro (RGB 96, 35, 24) */}
+
+              {/* QUADRADO - Vermelho */}
               <div style={{
                 width: '55px',
                 height: '55px',
@@ -463,7 +408,7 @@ const BrasiliaTransitions: React.FC = () => {
         </div>
       )}
 
-      {/* Texto inferior à esquerda */}
+      {/* Texto inferior */}
       <div style={{
         position: 'absolute',
         bottom: '35px',
@@ -488,28 +433,36 @@ const BrasiliaTransitions: React.FC = () => {
       </div>
 
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap');
+
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
         @keyframes fadeInRight {
-          from { 
-            opacity: 0; 
+          from {
+            opacity: 0;
             transform: translateX(50px);
           }
-          to { 
-            opacity: 1; 
+          to {
+            opacity: 1;
             transform: translateX(0);
           }
         }
-        
+
         @keyframes pulse {
-          0%, 100% { 
+          0%, 100% {
             transform: scale(1);
             border-color: rgba(251, 187, 16, 0.5);
           }
-          50% { 
+          50% {
             transform: scale(1.02);
             border-color: rgba(251, 187, 16, 0.7);
           }
         }
-        
+
         @keyframes bounce {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-15px); }
