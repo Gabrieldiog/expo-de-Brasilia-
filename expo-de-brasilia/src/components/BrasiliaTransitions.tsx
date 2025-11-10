@@ -282,17 +282,7 @@ const BrasiliaTransitions: React.FC = () => {
         opacity: logoLoaded ? 1 : 0,
         transition: 'opacity 0.5s ease-in-out'
       }}>
-        <img
-          src="/images/logo.jpeg"
-          alt="Brasília Logo"
-          onLoad={() => setLogoLoaded(true)}
-          style={{
-            width: '100%',
-            height: 'auto',
-            display: 'block',
-            filter: 'drop-shadow(0 6px 20px rgba(0, 0, 0, 0.8))'
-          }}
-        />
+        
       </div>
 
       {/* Card Modo de Espera - COM GRADIENTE E LINHAS */}
