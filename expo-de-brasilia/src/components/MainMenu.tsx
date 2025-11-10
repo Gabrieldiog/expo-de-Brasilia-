@@ -21,7 +21,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ onInactivity }) => {
       }
       inactivityTimerRef.current = setTimeout(() => {
         onInactivity();
-      }, 60000);
+      }, 300000);
     };
 
     const handleActivity = () => {
