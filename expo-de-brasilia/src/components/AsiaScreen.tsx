@@ -235,7 +235,7 @@ const AsiaScreen: React.FC<AsiaScreenProps> = ({ onBack }) => {
               border: '3px solid rgb(24, 99, 173)'  // BORDA MAIS GROSSA
             }}>
               <p style={{
-                fontSize: '23px',  // AUMENTADO de 12px para 15px
+                fontSize: '16px',  // AUMENTADO de 12px para 15px
                 fontWeight: '600',
                 color: 'rgb(24, 99, 173)',
                 textAlign: 'center',
