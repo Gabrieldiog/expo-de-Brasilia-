@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 
 interface EmGoiasScreenProps {
   onBack: () => void;
+  onMainMenu?: () => void;
 }
 
-const EmGoiasScreen: React.FC<EmGoiasScreenProps> = ({ onBack }) => {
+const EmGoiasScreen: React.FC<EmGoiasScreenProps> = ({ onBack, onMainMenu }) => {
   const [selectedJornal, setSelectedJornal] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -75,6 +76,18 @@ const EmGoiasScreen: React.FC<EmGoiasScreenProps> = ({ onBack }) => {
       >
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgb(255, 255, 255)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </div>
+
+      {/* Botão Menu Principal (Home) */}
+      <div
+        onClick={onMainMenu || onBack}
+        className="touch-card botao-home"
+        title="Voltar ao Menu Principal"
+      >
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgb(255, 255, 255)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
         </svg>
       </div>
 
@@ -293,6 +306,29 @@ const EmGoiasScreen: React.FC<EmGoiasScreenProps> = ({ onBack }) => {
           height: clamp(30px, 2.5vw, 40px);
         }
 
+        /* Botão Home (Menu Principal) */
+        .botao-home {
+          position: absolute;
+          top: clamp(20px, 2.5vw, 40px);
+          left: clamp(100px, 9vw, 140px);
+          background: rgb(84, 94, 56);
+          border-radius: 50%;
+          width: clamp(60px, 5vw, 80px);
+          height: clamp(60px, 5vw, 80px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 10px 30px rgba(84, 94, 56, 0.4);
+          z-index: 1000;
+          animation: fadeIn 1s ease 0.3s backwards;
+        }
+
+        .botao-home svg {
+          width: clamp(30px, 2.5vw, 40px);
+          height: clamp(30px, 2.5vw, 40px);
+        }
+
         /* Coluna dos Jornais */
         .coluna-jornais {
           height: 100%;
@@ -444,6 +480,7 @@ const EmGoiasScreen: React.FC<EmGoiasScreenProps> = ({ onBack }) => {
           animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s backwards;
           transition: all 0.3s ease;
           line-height: 1.4;
+          
         }
 
         .coluna-jornais:not(.jornal-selecionado) .texto-aviso {
@@ -660,6 +697,10 @@ const EmGoiasScreen: React.FC<EmGoiasScreenProps> = ({ onBack }) => {
           .cards-jornais:not(.modo-compacto) .jornal-card {
             min-width: 240px;
           }
+
+          .botao-home {
+            left: clamp(90px, 8vw, 120px);
+          }
         }
 
         /* Media Queries para mobile */
@@ -695,6 +736,11 @@ const EmGoiasScreen: React.FC<EmGoiasScreenProps> = ({ onBack }) => {
 
           .visualizador-imagem {
             margin-top: 20px;
+          }
+
+          .botao-home {
+            top: clamp(90px, 8vh, 110px);
+            left: clamp(20px, 2.5vw, 40px);
           }
         }
       `}</style>
