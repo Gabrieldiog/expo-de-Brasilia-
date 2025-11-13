@@ -5,9 +5,10 @@ import AsiaScreen from './AsiaScreen';
 
 interface MapaMundiScreenProps {
   onBack: () => void;
+  onMainMenu?: () => void;
 }
 
-const MapaMundiScreen: React.FC<MapaMundiScreenProps> = ({ onBack }) => {
+const MapaMundiScreen: React.FC<MapaMundiScreenProps> = ({ onBack, onMainMenu }) => {
   const [view, setView] = useState<'continentes' | 'america' | 'europa' | 'asia'>('continentes');
 
   const handleRegionClick = (region: 'america' | 'europa' | 'asia') => {
@@ -48,6 +49,18 @@ const MapaMundiScreen: React.FC<MapaMundiScreenProps> = ({ onBack }) => {
         </svg>
       </div>
 
+      {/* Botão Menu Principal (Home) */}
+      <div
+        onClick={onMainMenu || onBack}
+        className="touch-card botao-home-mapa"
+        title="Voltar ao Menu Principal"
+      >
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgb(255, 255, 255)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+      </div>
+
       {/* Tela de Continentes */}
       {view === 'continentes' && (
         <div className="tela-continentes">
@@ -80,15 +93,24 @@ const MapaMundiScreen: React.FC<MapaMundiScreenProps> = ({ onBack }) => {
             </p>
             
             <div className="badges-continentes">
-              <div className="badge-continente">
+              <div 
+                className="badge-continente badge-clicavel"
+                onClick={() => handleRegionClick('america')}
+              >
                 <div className="badge-circulo" />
                 <span className="badge-texto">Américas</span>
               </div>
-              <div className="badge-continente">
+              <div 
+                className="badge-continente badge-clicavel"
+                onClick={() => handleRegionClick('europa')}
+              >
                 <div className="badge-circulo" />
                 <span className="badge-texto">Europa</span>
               </div>
-              <div className="badge-continente">
+              <div 
+                className="badge-continente badge-clicavel"
+                onClick={() => handleRegionClick('asia')}
+              >
                 <div className="badge-circulo" />
                 <span className="badge-texto">Ásia</span>
               </div>
@@ -186,9 +208,33 @@ const MapaMundiScreen: React.FC<MapaMundiScreenProps> = ({ onBack }) => {
           cursor: pointer;
           box-shadow: 0 10px 30px rgba(24, 99, 173, 0.4);
           z-index: 1000;
+          animation: fadeIn 1s ease 0.2s backwards;
         }
 
         .botao-voltar-mapa svg {
+          width: clamp(30px, 2.5vw, 40px);
+          height: clamp(30px, 2.5vw, 40px);
+        }
+
+        /* Botão Home (Menu Principal) */
+        .botao-home-mapa {
+          position: absolute;
+          top: clamp(20px, 2.5vw, 40px);
+          left: clamp(100px, 9vw, 140px);
+          background: rgb(24, 99, 173);
+          border-radius: 50%;
+          width: clamp(60px, 5vw, 80px);
+          height: clamp(60px, 5vw, 80px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 10px 30px rgba(24, 99, 173, 0.4);
+          z-index: 1000;
+          animation: fadeIn 1s ease 0.3s backwards;
+        }
+
+        .botao-home-mapa svg {
           width: clamp(30px, 2.5vw, 40px);
           height: clamp(30px, 2.5vw, 40px);
         }
@@ -261,6 +307,22 @@ const MapaMundiScreen: React.FC<MapaMundiScreenProps> = ({ onBack }) => {
           border-left: clamp(3px, 0.3vw, 4px) solid rgb(24, 99, 173);
         }
 
+        .badge-clicavel {
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .badge-clicavel:hover {
+          background: rgba(24, 99, 173, 0.15);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(24, 99, 173, 0.2);
+        }
+
+        .badge-clicavel:active {
+          transform: translateY(0);
+          box-shadow: 0 2px 6px rgba(24, 99, 173, 0.15);
+        }
+
         .badge-circulo {
           width: clamp(14px, 1.2vw, 18px);
           height: clamp(14px, 1.2vw, 18px);
@@ -273,6 +335,12 @@ const MapaMundiScreen: React.FC<MapaMundiScreenProps> = ({ onBack }) => {
           font-size: clamp(13px, 1.1vw, 15px);
           font-weight: 600;
           color: rgb(24, 99, 173);
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
 
         /* Interações */
@@ -358,6 +426,10 @@ const MapaMundiScreen: React.FC<MapaMundiScreenProps> = ({ onBack }) => {
           .badges-continentes {
             gap: 18px;
           }
+
+          .botao-home-mapa {
+            left: clamp(90px, 8vw, 120px);
+          }
         }
 
         /* Media Queries para mobile */
@@ -385,6 +457,11 @@ const MapaMundiScreen: React.FC<MapaMundiScreenProps> = ({ onBack }) => {
 
           .badge-continente {
             padding: 6px 14px;
+          }
+
+          .botao-home-mapa {
+            top: clamp(90px, 8vh, 110px);
+            left: clamp(20px, 2.5vw, 40px);
           }
         }
 

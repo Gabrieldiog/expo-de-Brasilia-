@@ -77,7 +77,10 @@ const MainMenu: React.FC<MainMenuProps> = ({ onInactivity }) => {
   if (showMapaMundiScreen) {
     return (
       <div className="screen-transition" style={{ opacity: isTransitioning ? 1 : 0 }}>
-        <MapaMundiScreen onBack={handleBackToMenu} />
+        <MapaMundiScreen 
+          onBack={handleBackToMenu} 
+          onMainMenu={handleBackToMenu}  
+        />
       </div>
     );
   }
@@ -85,7 +88,10 @@ const MainMenu: React.FC<MainMenuProps> = ({ onInactivity }) => {
   if (showRevistasScreen) {
     return (
       <div className="screen-transition" style={{ opacity: isTransitioning ? 1 : 0 }}>
-        <RevistasBrasiliaScreen onBack={handleBackToMenu} />
+        <RevistasBrasiliaScreen 
+          onBack={handleBackToMenu} 
+          onMainMenu={handleBackToMenu} 
+        />
       </div>
     );
   }
@@ -93,7 +99,10 @@ const MainMenu: React.FC<MainMenuProps> = ({ onInactivity }) => {
   if (showJornaisScreen) {
     return (
       <div className="screen-transition" style={{ opacity: isTransitioning ? 1 : 0 }}>
-        <JornaisScreen onBack={handleBackToMenu} />
+        <JornaisScreen 
+          onBack={handleBackToMenu} 
+          onMainMenu={handleBackToMenu}  
+        />
       </div>
     );
   }
