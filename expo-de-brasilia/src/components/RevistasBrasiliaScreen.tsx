@@ -22,7 +22,8 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
     { ano: '1957', cor: 'rgb(195, 84, 40)' },
     { ano: '1958', cor: 'rgb(195, 84, 40)' },
     { ano: '1959', cor: 'rgb(195, 84, 40)' },
-    { ano: '1960', cor: 'rgb(195, 84, 40)' }
+    { ano: '1960', cor: 'rgb(195, 84, 40)' },
+    { ano: 'jornal_primeira_hora', cor: 'rgb(195, 84, 40)', label: 'Jornal Primeira Hora' }
   ];
 
   const getRevistasPorAno = (ano: string): RevistaConfig[] => {
@@ -74,6 +75,12 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
     return todasImagens.slice(inicio - 1, fim);
   };
 
+  const getImagensJornalPrimeiraHora = (): string[] => {
+    return Array.from({ length: 8 }, (_, i) =>
+      `/images/Revista_Basília_ imagens/jornal_brasilia/foto${i + 1}.jpg`
+    );
+  };
+
   const handleAnoClick = (ano: string) => {
     if (selectedAno === ano) {
       setSelectedAno(null);
@@ -108,7 +115,11 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
   };
 
   const handleNext = () => {
-    if (imagensAtuais.length > 0 && currentImageIndex < imagensAtuais.length - 1) {
+    if (selectedAno === 'jornal_primeira_hora') {
+      if (currentImageIndex < getImagensJornalPrimeiraHora().length - 1) {
+        setCurrentImageIndex(currentImageIndex + 1);
+      }
+    } else if (imagensAtuais.length > 0 && currentImageIndex < imagensAtuais.length - 1) {
       setCurrentImageIndex(currentImageIndex + 1);
     }
   };
@@ -132,7 +143,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
 
   return (
     <div className="revistas-container">
-      {/* Formas de apoio - Superior Direito */}
       <div className="forma-apoio-superior">
         <img
           src="/images/formas_apoio_laranja.png"
@@ -141,7 +151,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
         />
       </div>
 
-      {/* Formas de apoio - Inferior Esquerdo */}
       <div className="forma-apoio-inferior">
         <img
           src="/images/formas_apoio_laranja.png"
@@ -150,7 +159,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
         />
       </div>
 
-      {/* Botão Voltar */}
       <div
         onClick={handleCloseRevista}
         className="touch-card botao-voltar-revista"
@@ -160,7 +168,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
         </svg>
       </div>
 
-      {/* Botão Menu Principal (Home) */}
       <div
         onClick={onMainMenu || onBack}
         className="touch-card botao-home-revista"
@@ -172,7 +179,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
         </svg>
       </div>
 
-      {/* Tela inicial - Seleção de Anos */}
       {!selectedAno && (
         <div className="tela-anos">
           <div className="titulo-revista-container">
@@ -195,7 +201,9 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
                   animation: `fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) ${0.6 + index * 0.1}s backwards, cardFloat 4s ease-in-out infinite ${index * 0.2}s`
                 }}
               >
-                <h2 className="ano-texto">{item.ano}</h2>
+                <h2 className={`ano-texto ${item.label ? 'ano-texto-jornal' : ''}`}>
+                  {item.label ? item.label : item.ano}
+                </h2>
                 <img
                   src="/images/imagem_mao.jpeg"
                   alt="Toque aqui"
@@ -205,14 +213,54 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
             ))}
           </div>
 
-          <p className="texto-instrucao-anos">
-            Clique em um dos anos para visualizar as revistas
-          </p>
+          
         </div>
       )}
 
-      {/* Tela de seleção de Revistas */}
-      {selectedAno && !selectedRevista && (
+      {selectedAno === 'jornal_primeira_hora' && (
+        <div className="visualizador-revista">
+          <button
+            onClick={handlePrevious}
+            disabled={currentImageIndex === 0}
+            className="nav-button nav-button-prev"
+            style={{
+              background: currentImageIndex === 0 ? 'rgba(150, 150, 150, 0.5)' : 'rgb(195, 84, 40)',
+              cursor: currentImageIndex === 0 ? 'not-allowed' : 'pointer'
+            }}
+          >
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="rgb(255, 255, 255)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+
+          <div className="polaroid-frame-revista">
+            <img
+              src={getImagensJornalPrimeiraHora()[currentImageIndex]}
+              alt={`Jornal Primeira Hora - Página ${currentImageIndex + 1}`}
+              className="revista-imagem"
+            />
+            <p className="revista-legenda">
+              Jornal Primeira Hora - Página {currentImageIndex + 1} de {getImagensJornalPrimeiraHora().length}
+            </p>
+          </div>
+
+          <button
+            onClick={handleNext}
+            disabled={currentImageIndex === getImagensJornalPrimeiraHora().length - 1}
+            className="nav-button nav-button-next"
+            style={{
+              background: currentImageIndex === getImagensJornalPrimeiraHora().length - 1 ? 'rgba(150, 150, 150, 0.5)' : 'rgb(195, 84, 40)',
+              cursor: currentImageIndex === getImagensJornalPrimeiraHora().length - 1 ? 'not-allowed' : 'pointer'
+            }}
+          >
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="rgb(255, 255, 255)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+      )}
+
+      {selectedAno && selectedAno !== 'jornal_primeira_hora' && !selectedRevista && (
         <div className="tela-revistas">
           <h3 className="titulo-ano-selecionado">
             REVISTAS DE {selectedAno}
@@ -239,10 +287,8 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
         </div>
       )}
 
-      {/* Visualizador de Revista */}
       {selectedRevista && (
         <div className="visualizador-revista">
-          {/* Sidebar com mini-cards */}
           <div className="sidebar-revistas">
             <div className="aviso-sidebar">
               <p className="aviso-texto">
@@ -270,7 +316,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
             ))}
           </div>
 
-          {/* Botão Anterior */}
           <button
             onClick={handlePrevious}
             disabled={currentImageIndex === 0}
@@ -285,7 +330,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
             </svg>
           </button>
 
-          {/* Frame Polaroid */}
           <div className="polaroid-frame-revista">
             <img
               src={imagensAtuais[currentImageIndex]}
@@ -300,7 +344,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
             </p>
           </div>
 
-          {/* Botão Próximo */}
           <button
             onClick={handleNext}
             disabled={currentImageIndex === imagensAtuais.length - 1}
@@ -325,7 +368,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Container Principal */
         .revistas-container {
           width: 100vw;
           height: 100vh;
@@ -340,7 +382,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           font-family: 'Jost', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
-        /* Formas de apoio */
         .forma-apoio-superior {
           position: absolute;
           top: 10px;
@@ -377,7 +418,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           left: clamp(-40px, -4vw, -80px);
         }
 
-        /* Botão Voltar */
         .botao-voltar-revista {
           position: absolute;
           top: clamp(20px, 2.5vw, 40px);
@@ -400,7 +440,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           height: clamp(30px, 2.5vw, 40px);
         }
 
-        /* Botão Home (Menu Principal) */
         .botao-home-revista {
           position: absolute;
           top: clamp(20px, 2.5vw, 40px);
@@ -423,7 +462,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           height: clamp(30px, 2.5vw, 40px);
         }
 
-        /* Tela de Anos */
         .tela-anos {
           width: 100%;
           height: 100%;
@@ -496,6 +534,12 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           transition: all 0.3s ease;
         }
 
+        .ano-texto-jornal {
+          font-size: clamp(24px, 2.2vw, 36px) !important;
+          line-height: 1.2;
+          padding: 0 clamp(10px, 1vw, 15px);
+        }
+
         .icone-toque-ano {
           position: absolute;
           bottom: clamp(8px, 0.8vw, 12px);
@@ -517,7 +561,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           line-height: 1.4;
         }
 
-        /* Tela de Revistas */
         .tela-revistas {
           width: 100%;
           height: 100%;
@@ -588,7 +631,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           line-height: 1.5;
         }
 
-        /* Visualizador de Revista */
         .visualizador-revista {
           width: 100%;
           height: 100%;
@@ -695,7 +737,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           font-family: 'Jost', sans-serif;
         }
 
-        /* Animações */
         @keyframes cardFloat {
           0%, 100% { transform: translateY(0) scale(1); }
           50% { transform: translateY(-10px) scale(1.02); }
@@ -731,7 +772,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           to { opacity: 1; transform: translateX(0); }
         }
 
-        /* Interações */
         .touch-card:active {
           transform: scale(0.95) !important;
           transition: transform 0.1s ease;
@@ -763,7 +803,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           transform: scale(0.95);
         }
 
-        /* Scrollbar */
         div::-webkit-scrollbar {
           width: clamp(6px, 0.5vw, 8px);
         }
@@ -782,7 +821,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           background: rgb(215, 104, 60);
         }
 
-        /* Media Queries para telas grandes (32 polegadas e maiores) */
         @media (min-width: 2560px) {
           .revistas-container {
             padding: 80px;
@@ -809,6 +847,10 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
 
           .ano-texto {
             font-size: 72px;
+          }
+
+          .ano-texto-jornal {
+            font-size: 42px !important;
           }
 
           .icone-toque-ano {
@@ -877,7 +919,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           }
         }
 
-        /* Media Queries para tablets */
         @media (max-width: 1024px) {
           .titulo-revista {
             font-size: 70px;
@@ -905,7 +946,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           }
         }
 
-        /* Media Queries para mobile */
         @media (max-width: 768px) {
           .revistas-container {
             flex-direction: column;
@@ -933,6 +973,10 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
 
           .card-ano {
             height: 140px;
+          }
+
+          .ano-texto-jornal {
+            font-size: 20px !important;
           }
 
           .titulo-ano-selecionado {
