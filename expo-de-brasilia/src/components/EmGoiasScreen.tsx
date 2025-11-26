@@ -11,7 +11,7 @@ const EmGoiasScreen: React.FC<EmGoiasScreenProps> = ({ onBack, onMainMenu }) => 
 
   const jornais = {
     'Jornal de Goiás': {
-      images: Array.from({ length: 14 }, (_, i) => `/images/jornal_noticias/noticias${i + 1}.jpg`)
+      images: Array.from({ length: 6 }, (_, i) => `/images/jornal_noticias/noticias${i + 1}.jpg`)
     },
     'Jornal Óio': {
       images: Array.from({ length: 6 }, (_, i) => `/images/jornal_oio/jornal_oio${i + 1}.jpg`)
@@ -114,7 +114,7 @@ const EmGoiasScreen: React.FC<EmGoiasScreenProps> = ({ onBack, onMainMenu }) => 
             }}
           >
             <h2 className={`jornal-titulo ${selectedJornal ? 'titulo-compacto' : ''}`}>
-              Jornal de<br />Goiás
+              Jornal de<br />Notícias
             </h2>
             {!selectedJornal && (
               <img
