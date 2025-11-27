@@ -26,10 +26,15 @@ const OutrosEstadosScreen: React.FC<OutrosEstadosScreenProps> = ({ onBack, onMai
 
   const jornaisEstados: { [key: string]: Jornal[] } = {
     'Distrito Federal': [
-      {
-        path: '/images/Jornais_em_outros_Estados/correio.jpg',
-        nome: 'Correio Brasiliense - Brasília'
-      }
+      { path: '/images/jornal_brasilia/foto1.jpg', nome: '' },
+      { path: '/images/jornal_brasilia/foto2.jpg', nome: '' },
+      { path: '/images/jornal_brasilia/foto3.jpg', nome: '' },
+      { path: '/images/jornal_brasilia/foto4.jpg', nome: '' },
+      { path: '/images/jornal_brasilia/foto5.jpg', nome: '' },
+      { path: '/images/jornal_brasilia/foto6.jpg', nome: '' },
+      { path: '/images/jornal_brasilia/foto7.jpg', nome: '' },
+      { path: '/images/jornal_brasilia/foto8.jpg', nome: '' },
+      { path: '/images/jornal_brasilia/foto9.jpg', nome: '' }
     ],
     'Minas Gerais': [
       {
@@ -167,13 +172,15 @@ const OutrosEstadosScreen: React.FC<OutrosEstadosScreenProps> = ({ onBack, onMai
           <div className="polaroid-frame">
             <img
               src={jornalAtual.path}
-              alt={jornalAtual.nome}
+              alt={jornalAtual.nome || `Imagem ${currentImageIndex + 1}`}
               className="jornal-img"
             />
-            <p className="jornal-titulo">
-              {jornalAtual.nome}
-              {temMultiplosJornais && ` - ${currentImageIndex + 1} de ${jornaisDoEstado.length}`}
-            </p>
+            {jornalAtual.nome && (
+              <p className="jornal-titulo">
+                {jornalAtual.nome}
+                {temMultiplosJornais && ` - ${currentImageIndex + 1} de ${jornaisDoEstado.length}`}
+              </p>
+            )}
           </div>
 
           {/* Botão Próximo */}
@@ -467,7 +474,7 @@ const OutrosEstadosScreen: React.FC<OutrosEstadosScreenProps> = ({ onBack, onMai
 
         .polaroid-frame {
           background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 245, 245, 0.95) 100%);
-          padding: clamp(15px, 1.5vw, 20px) clamp(15px, 1.5vw, 20px) clamp(60px, 5vw, 80px) clamp(15px, 1.5vw, 20px);
+          padding: clamp(15px, 1.5vw, 20px);
           border-radius: clamp(8px, 0.8vw, 12px);
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 clamp(4px, 0.5vw, 8px) rgb(84, 94, 56);
           border: clamp(2px, 0.3vw, 4px) solid rgba(0, 0, 0, 0.8);
@@ -480,7 +487,7 @@ const OutrosEstadosScreen: React.FC<OutrosEstadosScreenProps> = ({ onBack, onMai
 
         .jornal-img {
           max-width: 100%;
-          max-height: calc(90vh - clamp(120px, 12vh, 180px));
+          max-height: calc(90vh - clamp(60px, 6vh, 100px));
           object-fit: contain;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }

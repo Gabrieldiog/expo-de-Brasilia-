@@ -22,8 +22,7 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
     { ano: '1957', cor: 'rgb(195, 84, 40)' },
     { ano: '1958', cor: 'rgb(195, 84, 40)' },
     { ano: '1959', cor: 'rgb(195, 84, 40)' },
-    { ano: '1960', cor: 'rgb(195, 84, 40)' },
-    { ano: 'jornal_primeira_hora', cor: 'rgb(195, 84, 40)', label: 'Jornal Primeira Hora' }
+    { ano: '1960', cor: 'rgb(195, 84, 40)' }
   ];
 
   const getRevistasPorAno = (ano: string): RevistaConfig[] => {
@@ -75,12 +74,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
     return todasImagens.slice(inicio - 1, fim);
   };
 
-  const getImagensJornalPrimeiraHora = (): string[] => {
-    return Array.from({ length: 8 }, (_, i) =>
-      `/images/Revista_Basília_ imagens/jornal_brasilia/foto${i + 1}.jpg`
-    );
-  };
-
   const handleAnoClick = (ano: string) => {
     if (selectedAno === ano) {
       setSelectedAno(null);
@@ -115,11 +108,7 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
   };
 
   const handleNext = () => {
-    if (selectedAno === 'jornal_primeira_hora') {
-      if (currentImageIndex < getImagensJornalPrimeiraHora().length - 1) {
-        setCurrentImageIndex(currentImageIndex + 1);
-      }
-    } else if (imagensAtuais.length > 0 && currentImageIndex < imagensAtuais.length - 1) {
+    if (imagensAtuais.length > 0 && currentImageIndex < imagensAtuais.length - 1) {
       setCurrentImageIndex(currentImageIndex + 1);
     }
   };
@@ -201,8 +190,8 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
                   animation: `fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) ${0.6 + index * 0.1}s backwards, cardFloat 4s ease-in-out infinite ${index * 0.2}s`
                 }}
               >
-                <h2 className={`ano-texto ${item.label ? 'ano-texto-jornal' : ''}`}>
-                  {item.label ? item.label : item.ano}
+                <h2 className="ano-texto">
+                  {item.ano}
                 </h2>
                 <img
                   src="/images/imagem_mao.jpeg"
@@ -212,55 +201,10 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
               </div>
             ))}
           </div>
-
-          
         </div>
       )}
 
-      {selectedAno === 'jornal_primeira_hora' && (
-        <div className="visualizador-revista">
-          <button
-            onClick={handlePrevious}
-            disabled={currentImageIndex === 0}
-            className="nav-button nav-button-prev"
-            style={{
-              background: currentImageIndex === 0 ? 'rgba(150, 150, 150, 0.5)' : 'rgb(195, 84, 40)',
-              cursor: currentImageIndex === 0 ? 'not-allowed' : 'pointer'
-            }}
-          >
-            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="rgb(255, 255, 255)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-
-          <div className="polaroid-frame-revista">
-            <img
-              src={getImagensJornalPrimeiraHora()[currentImageIndex]}
-              alt={`Jornal Primeira Hora - Página ${currentImageIndex + 1}`}
-              className="revista-imagem"
-            />
-            <p className="revista-legenda">
-              Jornal Primeira Hora - Página {currentImageIndex + 1} de {getImagensJornalPrimeiraHora().length}
-            </p>
-          </div>
-
-          <button
-            onClick={handleNext}
-            disabled={currentImageIndex === getImagensJornalPrimeiraHora().length - 1}
-            className="nav-button nav-button-next"
-            style={{
-              background: currentImageIndex === getImagensJornalPrimeiraHora().length - 1 ? 'rgba(150, 150, 150, 0.5)' : 'rgb(195, 84, 40)',
-              cursor: currentImageIndex === getImagensJornalPrimeiraHora().length - 1 ? 'not-allowed' : 'pointer'
-            }}
-          >
-            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="rgb(255, 255, 255)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
-        </div>
-      )}
-
-      {selectedAno && selectedAno !== 'jornal_primeira_hora' && !selectedRevista && (
+      {selectedAno && !selectedRevista && (
         <div className="tela-revistas">
           <h3 className="titulo-ano-selecionado">
             REVISTAS DE {selectedAno}
@@ -534,12 +478,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           transition: all 0.3s ease;
         }
 
-        .ano-texto-jornal {
-          font-size: clamp(24px, 2.2vw, 36px) !important;
-          line-height: 1.2;
-          padding: 0 clamp(10px, 1vw, 15px);
-        }
-
         .icone-toque-ano {
           position: absolute;
           bottom: clamp(8px, 0.8vw, 12px);
@@ -549,16 +487,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
           object-fit: contain;
           opacity: 0.9;
           animation: tapBounce 1.5s ease-in-out infinite;
-        }
-
-        .texto-instrucao-anos {
-          font-size: clamp(22px, 2vw, 33px);
-          font-weight: 600;
-          color: rgba(0, 0, 0, 1);
-          text-align: center;
-          margin-top: clamp(15px, 1.5vw, 20px);
-          max-width: 100%;
-          line-height: 1.4;
         }
 
         .tela-revistas {
@@ -849,17 +777,9 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
             font-size: 72px;
           }
 
-          .ano-texto-jornal {
-            font-size: 42px !important;
-          }
-
           .icone-toque-ano {
             width: 55px;
             height: 55px;
-          }
-
-          .texto-instrucao-anos {
-            font-size: 38px;
           }
 
           .titulo-ano-selecionado {
@@ -973,10 +893,6 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
 
           .card-ano {
             height: 140px;
-          }
-
-          .ano-texto-jornal {
-            font-size: 20px !important;
           }
 
           .titulo-ano-selecionado {
