@@ -80,9 +80,7 @@ const AmericaScreen: React.FC<AmericaScreenProps> = ({ onBack }) => {
         <div className="tela-inicial-america">
           <div className="titulo-america-container">
             <h1 className="titulo-america">AMÉRICAS</h1>
-            <p className="subtitulo-america">
-              Repercussão Internacional
-            </p>
+            
           </div>
 
           <div className="grid-paises-america">
