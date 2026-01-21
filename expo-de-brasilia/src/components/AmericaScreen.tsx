@@ -113,7 +113,7 @@ const AmericaScreen: React.FC<AmericaScreenProps> = ({ onBack }) => {
         </div>
       )}
 
-      {/* VISUALIZADOR COM PAINEL LATERAL */}
+      {/* VISUALIZADOR COM PAINEL LATERAL dededededede*/}
       {selectedPais && fotosAtuais.length > 0 && (
         <div className="visualizador-america">
           <div className="sidebar-paises-america">
