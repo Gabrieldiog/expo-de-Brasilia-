@@ -3,17 +3,10 @@ setlocal EnableDelayedExpansion
 chcp 65001 >nul
 title Totem - Expo Brasilia (IHGG)
 
-rem ============================================================
-rem  CONFIGURACAO
-rem ============================================================
 set "PORTA=3000"
-rem  Reabrir o navegador se ele for fechado/travar? (1/0)
 set "REABRIR=1"
-rem  Impedir que a tela/PC entre em descanso? (1/0)
 set "SEM_DESCANSO=1"
-rem ============================================================
 
-rem Vai para a pasta do projeto (um nivel acima desta pasta totem\)
 cd /d "%~dp0.."
 
 where node >nul 2>nul || (
@@ -21,32 +14,27 @@ where node >nul 2>nul || (
   pause & exit /b 1
 )
 
-rem 1) Dependencias (so na primeira vez)
 if not exist "node_modules\" (
   echo Instalando dependencias... ^(so na primeira vez, precisa de internet^)
   call npm install --legacy-peer-deps || (echo [ERRO] npm install falhou. & pause & exit /b 1)
 )
 
-rem 2) Gera a versao final do app (se nao existir ou com o parametro "rebuild")
 if /i "%~1"=="rebuild" if exist "build\" rmdir /s /q "build"
 if not exist "build\index.html" (
   echo Gerando o build do totem... ^(pode levar alguns minutos^)
   call npm run build || (echo [ERRO] npm run build falhou. & pause & exit /b 1)
 )
 
-rem 3) Sem descanso de tela enquanto o totem estiver ligado
 if "%SEM_DESCANSO%"=="1" (
   powercfg /change monitor-timeout-ac 0 >nul 2>nul
   powercfg /change standby-timeout-ac 0 >nul 2>nul
   powercfg /change hibernate-timeout-ac 0 >nul 2>nul
 )
 
-rem 4) Servidor local (offline) em segundo plano
 echo Iniciando servidor local na porta %PORTA%...
 start "Servidor do Totem" /min cmd /c "node totem\servidor.js %PORTA%"
 timeout /t 3 >nul
 
-rem 5) Navegador em modo quiosque (Chrome, senao Edge)
 set "NAV="
 for %%P in (
   "%ProgramFiles%\Google\Chrome\Application\chrome.exe"

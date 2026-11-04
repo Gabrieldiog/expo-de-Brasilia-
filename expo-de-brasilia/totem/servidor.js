@@ -1,5 +1,3 @@
-// Servidor local do totem: serve a pasta build/ sem internet e sem dependências.
-// Uso: node totem/servidor.js [porta]
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -24,9 +22,9 @@ if (!fs.existsSync(path.join(RAIZ, 'index.html'))) {
 
 function enviar(res, arquivo, req) {
   fs.stat(arquivo, (err, st) => {
-    if (err || !st.isFile()) return enviar(res, path.join(RAIZ, 'index.html'), req); // SPA
+    if (err || !st.isFile()) return enviar(res, path.join(RAIZ, 'index.html'), req);
     const tipo = TIPOS[path.extname(arquivo).toLowerCase()] || 'application/octet-stream';
-    const range = req.headers.range;                        // vídeos precisam de Range
+    const range = req.headers.range;
     if (range) {
       const m = /bytes=(\d*)-(\d*)/.exec(range) || [];
       const ini = m[1] ? Number(m[1]) : 0;

@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# Totem - Expo Brasília (IHGG) — macOS / Linux
-# Uso: ./totem/iniciar-totem.sh          (usa o build existente)
-#      ./totem/iniciar-totem.sh rebuild  (gera o build de novo)
 set -e
 PORTA=3000
 REABRIR=1
@@ -12,18 +9,17 @@ command -v node >/dev/null || { echo "[ERRO] Node.js não instalado (https://nod
 [ "$1" = "rebuild" ] && rm -rf build
 [ -f build/index.html ] || { echo "Gerando o build..."; npm run build; }
 
-set +e   # daqui em diante, erros não derrubam o totem
+set +e
 node totem/servidor.js "$PORTA" &
 SERVIDOR=$!
 trap 'kill $SERVIDOR ${INIBIDOR:-} 2>/dev/null' EXIT
 sleep 2
 
-# Impede descanso/bloqueio de tela enquanto o totem roda
-if command -v caffeinate >/dev/null; then            # macOS
+if command -v caffeinate >/dev/null; then
   caffeinate -dimsu -w $$ &
-else                                                 # Linux
+else
   command -v xset >/dev/null && { xset s off; xset -dpms; xset s noblank; } 2>/dev/null
-  if command -v gsettings >/dev/null; then           # GNOME (Ubuntu etc.)
+  if command -v gsettings >/dev/null; then
     gsettings set org.gnome.desktop.session idle-delay 0 2>/dev/null
     gsettings set org.gnome.desktop.screensaver lock-enabled false 2>/dev/null
     gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing' 2>/dev/null
@@ -42,7 +38,7 @@ for c in "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
 done
 [ -z "$NAV" ] && { echo "[ERRO] Chrome/Edge/Chromium não encontrado."; exit 1; }
 
-PERFIL="$HOME/expo-brasilia-totem-perfil"; mkdir -p "$PERFIL"   # nao oculta: Chromium snap nao grava em pastas com ponto
+PERFIL="$HOME/expo-brasilia-totem-perfil"; mkdir -p "$PERFIL"
 echo "Totem rodando. Para sair: Ctrl+C aqui e depois Cmd+Q / Alt+F4."
 while :; do
   "$NAV" --kiosk "http://localhost:$PORTA" --user-data-dir="$PERFIL" \
