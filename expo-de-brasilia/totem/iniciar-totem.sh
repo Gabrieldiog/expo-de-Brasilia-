@@ -4,13 +4,21 @@ PORTA=3000
 REABRIR=1
 cd "$(dirname "$0")/.."
 
-command -v node >/dev/null || { echo "[ERRO] Node.js não instalado (https://nodejs.org)"; exit 1; }
-[ -d node_modules ] || { echo "Instalando dependências..."; npm install --legacy-peer-deps; }
 [ "$1" = "rebuild" ] && rm -rf build
-[ -f build/index.html ] || { echo "Gerando o build..."; npm run build; }
+if [ ! -f build/index.html ]; then
+  command -v npm >/dev/null || { echo "[ERRO] Sem a pasta build e sem Node.js. Mande a pasta com o build pronto ou instale o Node.js."; exit 1; }
+  [ -d node_modules ] || { echo "Instalando dependências..."; npm install --legacy-peer-deps; }
+  echo "Gerando o build..."; npm run build
+fi
 
 set +e
-node totem/servidor.js "$PORTA" &
+if command -v node >/dev/null; then
+  node totem/servidor.js "$PORTA" &
+elif command -v python3 >/dev/null; then
+  python3 -m http.server "$PORTA" --bind 127.0.0.1 --directory build >/dev/null 2>&1 &
+else
+  echo "[ERRO] Não encontrei Node.js nem Python 3 para servir o totem."; exit 1
+fi
 SERVIDOR=$!
 trap 'kill $SERVIDOR ${INIBIDOR:-} 2>/dev/null' EXIT
 sleep 2
@@ -36,16 +44,22 @@ for c in "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
          /snap/bin/chromium; do
   if [ -x "$c" ] || command -v "$c" >/dev/null 2>&1; then NAV="$c"; break; fi
 done
-[ -z "$NAV" ] && { echo "[ERRO] Chrome/Edge/Chromium não encontrado."; exit 1; }
+FIREFOX=0
+if [ -z "$NAV" ] && command -v firefox >/dev/null; then NAV=firefox; FIREFOX=1; fi
+[ -z "$NAV" ] && { echo "[ERRO] Nenhum navegador encontrado (Chromium, Chrome ou Firefox)."; exit 1; }
 
 PERFIL="$HOME/expo-brasilia-totem-perfil"; mkdir -p "$PERFIL"
 echo "Totem rodando. Para sair: Ctrl+C aqui e depois Cmd+Q / Alt+F4."
 while :; do
+  if [ "$FIREFOX" = "1" ]; then
+    firefox --kiosk --profile "$PERFIL" "http://localhost:$PORTA"
+  else
   "$NAV" --kiosk "http://localhost:$PORTA" --user-data-dir="$PERFIL" \
     --no-first-run --no-default-browser-check --disable-session-crashed-bubble \
     --disable-infobars --noerrdialogs --disable-features=TranslateUI,Translate \
     --overscroll-history-navigation=0 \
     --autoplay-policy=no-user-gesture-required --password-store=basic
+  fi
   [ "$REABRIR" = "1" ] || break
   echo "Navegador fechado. Reabrindo em 3 s... (Ctrl+C cancela)"; sleep 3
 done

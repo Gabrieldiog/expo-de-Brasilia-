@@ -14,12 +14,11 @@ where node >nul 2>nul || (
   pause & exit /b 1
 )
 
-if not exist "node_modules\" (
+if /i "%~1"=="rebuild" if exist "build\" rmdir /s /q "build"
+if not exist "build\index.html" if not exist "node_modules\" (
   echo Instalando dependencias... ^(so na primeira vez, precisa de internet^)
   call npm install --legacy-peer-deps || (echo [ERRO] npm install falhou. & pause & exit /b 1)
 )
-
-if /i "%~1"=="rebuild" if exist "build\" rmdir /s /q "build"
 if not exist "build\index.html" (
   echo Gerando o build do totem... ^(pode levar alguns minutos^)
   call npm run build || (echo [ERRO] npm run build falhou. & pause & exit /b 1)
