@@ -33,7 +33,7 @@ const OutrosEstadosScreen: React.FC<OutrosEstadosScreenProps> = ({ onBack, onMai
     ],
     'Minas Gerais': [
       {
-        path: '/images/Jornais_em_outros_Estados/di',
+        path: '/images/Jornais_em_outros_Estados/dirario.jpg',
         nome: 'Diário Associados - Minas Gerais'
       }
     ],

@@ -161,7 +161,7 @@ const AmericaScreen: React.FC<AmericaScreenProps> = ({ onBack }) => {
 
           <div className="polaroid-frame-america">
             <img
-              src={`/images/Americas/foto${fotoAtual.numeroFoto}.jpg`}
+              src={`/images/americas/foto${fotoAtual.numeroFoto}.jpg`}
               alt={`${selectedPais} - ${fotoAtual.nomeJornal}`}
               className="america-imagem"
             />

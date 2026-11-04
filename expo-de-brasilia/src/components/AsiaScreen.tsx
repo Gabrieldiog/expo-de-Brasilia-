@@ -312,7 +312,7 @@ const AsiaScreen: React.FC<AsiaScreenProps> = ({ onBack }) => {
             alignItems: 'center'
           }}>
             <img
-              src={`/images/Asia/foto${fotoAtual.numeroFoto}.jpg`}
+              src={`/images/asia/foto${fotoAtual.numeroFoto}.jpg`}
               alt={`${selectedPais} - ${fotoAtual.nomeJornal}`}
               style={{
                 maxWidth: '100%',

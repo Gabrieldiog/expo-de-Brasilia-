@@ -195,7 +195,7 @@ const EuropaScreen: React.FC<EuropaScreenProps> = ({ onBack }) => {
           {/* Container da Imagem */}
           <div className="polaroid-frame-europa">
             <img
-              src={`/images/Europa/foto${fotoAtual.numeroFoto}.jpg`}
+              src={`/images/europa/foto${fotoAtual.numeroFoto}.jpg`}
               alt={`${selectedPais} - ${fotoAtual.nomeJornal}`}
               className="europa-imagem"
             />
