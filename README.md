@@ -86,6 +86,31 @@ Depois de mudar o código, rode com `rebuild` para gerar o build de novo
 (`iniciar-totem.bat rebuild`). Para sair: feche a janela do script e depois `Alt+F4`.
 Para iniciar com o Windows: `Win+R` → `shell:startup` → crie um atalho para o `.bat`.
 
+### No totem Linux (Ubuntu ou similar)
+
+Uma vez só, com internet:
+
+```bash
+sudo apt install -y nodejs npm chromium-browser   # ou instale o Google Chrome
+git clone https://github.com/Gabrieldiog/expo-de-Brasilia-.git
+cd expo-de-Brasilia-/expo-de-brasilia
+./totem/iniciar-totem.sh        # instala, gera o build e abre o totem
+```
+
+Precisa de Node.js 18 ou mais novo (`node -v`). Se o do `apt` for mais antigo,
+instale pelo site nodejs.org. Depois disso o totem roda **sem internet**.
+
+Para abrir sozinho quando o Linux ligar, configure o login automático do usuário e crie
+`~/.config/autostart/totem.desktop`:
+
+```ini
+[Desktop Entry]
+Type=Application
+Name=Totem Expo Brasília
+Exec=/CAMINHO/COMPLETO/expo-de-Brasilia-/expo-de-brasilia/totem/iniciar-totem.sh
+X-GNOME-Autostart-enabled=true
+```
+
 ## Contexto
 
 Projeto desenvolvido para o **Instituto Histórico e Geográfico de Goiás (IHGG)** entre outubro de 2025 e janeiro de 2026, com atuação em arquitetura, desenvolvimento full stack e modelagem da base de dados.
