@@ -67,6 +67,25 @@ npm run dev
 | `DB_NAME` | Nome do banco |
 | `PORT` | Porta da aplicação |
 
+## Rodar como totem (modo quiosque)
+
+Na máquina do totem (precisa de Node.js e Google Chrome ou Microsoft Edge):
+
+- **Windows:** dois cliques em `expo-de-brasilia/totem/iniciar-totem.bat`
+- **macOS/Linux:** `./expo-de-brasilia/totem/iniciar-totem.sh`
+
+O script, sozinho:
+
+1. instala as dependências na primeira vez (`npm install --legacy-peer-deps`, só aqui precisa de internet);
+2. gera o build (`npm run build`), se ainda não existir;
+3. sobe um servidor local offline (`totem/servidor.js`, sem dependências) em `http://localhost:3000`;
+4. abre o Chrome/Edge em `--kiosk` (tela cheia, sem barra), com perfil próprio, e reabre se fechar;
+5. desliga o descanso de tela/suspensão do sistema.
+
+Depois de mudar o código, rode com `rebuild` para gerar o build de novo
+(`iniciar-totem.bat rebuild`). Para sair: feche a janela do script e depois `Alt+F4`.
+Para iniciar com o Windows: `Win+R` → `shell:startup` → crie um atalho para o `.bat`.
+
 ## Contexto
 
 Projeto desenvolvido para o **Instituto Histórico e Geográfico de Goiás (IHGG)** entre outubro de 2025 e janeiro de 2026, com atuação em arquitetura, desenvolvimento full stack e modelagem da base de dados.
