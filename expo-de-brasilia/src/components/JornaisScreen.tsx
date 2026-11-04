@@ -33,8 +33,7 @@ const OutrosEstadosScreen: React.FC<OutrosEstadosScreenProps> = ({ onBack, onMai
       { path: '/images/jornal_brasilia/foto5.jpg', nome: '' },
       { path: '/images/jornal_brasilia/foto6.jpg', nome: '' },
       { path: '/images/jornal_brasilia/foto7.jpg', nome: '' },
-      { path: '/images/jornal_brasilia/foto8.jpg', nome: '' },
-      { path: '/images/jornal_brasilia/foto9.jpg', nome: '' }
+      { path: '/images/jornal_brasilia/foto8.jpg', nome: '' }
     ],
     'Minas Gerais': [
       {
