@@ -65,7 +65,7 @@ const RevistasBrasiliaScreen: React.FC<RevistasBrasiliaScreenProps> = ({ onBack,
 
     const quantidade = quantidades[ano] || 0;
     return Array.from({ length: quantidade }, (_, i) =>
-      `/images/Revista_Basília_ imagens/Revista_Brasília ano_${ano}/foto${i + 1}.jpg`
+      `/images/revista_brasilia/ano_${ano}/foto${i + 1}.jpg`
     );
   };
 
