@@ -20,9 +20,30 @@ if (!fs.existsSync(path.join(RAIZ, 'index.html'))) {
   process.exit(1);
 }
 
-function enviar(res, arquivo, req) {
-  fs.stat(arquivo, (err, st) => {
-    if (err || !st.isFile()) return enviar(res, path.join(RAIZ, 'index.html'), req);
+function localizar(arquivo) {
+  if (fs.existsSync(arquivo)) return arquivo;
+  const partes = path.relative(RAIZ, arquivo).split(path.sep);
+  let atual = RAIZ;
+  for (const parte of partes) {
+    const direto = path.join(atual, parte);
+    if (fs.existsSync(direto)) { atual = direto; continue; }
+    let nomes;
+    try { nomes = fs.readdirSync(atual); } catch { return null; }
+    const alvo = parte.normalize('NFC').toLowerCase();
+    const achado = nomes.find((n) => n.normalize('NFC').toLowerCase() === alvo);
+    if (!achado) return null;
+    atual = path.join(atual, achado);
+  }
+  return atual;
+}
+
+function enviar(res, pedido, req) {
+  const arquivo = localizar(pedido);
+  fs.stat(arquivo || pedido, (err, st) => {
+    if (err || !st.isFile()) {
+      if (path.extname(pedido)) { res.writeHead(404); return res.end(); }
+      return enviar(res, path.join(RAIZ, 'index.html'), req);
+    }
     const tipo = TIPOS[path.extname(arquivo).toLowerCase()] || 'application/octet-stream';
     const range = req.headers.range;
     if (range) {
